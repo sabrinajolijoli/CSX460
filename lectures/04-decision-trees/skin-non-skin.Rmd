@@ -29,11 +29,12 @@ dat <- read.delim(url(url), header=FALSE )
 names(dat) <- c('r', 'g', 'b', 'skin') 
 
 # TRANSFORM DATA
-  dat$skin <- (dat$skin - 1) %>% as.logical 
+  dat$skin <- (dat$skin - 1) %>%  as.logical 
 
   
 # PARTITION DATA
   wh <- sample(1:nrow(dat), size = .7 * nrow(dat) )
+  
   train <- dat[wh, ]
   test  <- dat[-wh, ]
   

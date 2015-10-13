@@ -1,4 +1,6 @@
+
 ---
+
 title: "Resampling"
 author: "Christopher Brown"
 date: "October 5, 2015"
@@ -15,12 +17,24 @@ Use the `baseball` data set from the `plyr` package for the following problem.
 
 A very simple model to predict the number of at-bats/game **each** player has per game is given by: 
  
-     abpg = sum(ab)/sum(g)  # 3.10
+     abpg = with(baseball,sum(ab)/sum(g) ) # 3.10
      
 
 - Show that this is a bad:
 
 ```{r}
+install.packages("plyr")
+library(plyr)
+library(gglot2)
+ab
+g
+abpg
+abpg = with(baseball,sum(ab)/sum(g) )
+q_err <- quote(ab/g-abpg)
+q_abpg <- quoto(sum(ab)/sum(g))
+mean (eval(q_err,baseball),na.rm = TRUE)
+hist(eval(q_err,baseball))
+abpg = with(baseball,sum(ab)/sum(r))
 
 ```
 
@@ -29,6 +43,15 @@ A very simple model to predict the number of at-bats/game **each** player has pe
 - Create a better model using only number of games as a predictor
 
 ```{r}
+attach(baseball)
+fit <- lm(ab~g+0,baseball)
+summary(fit)
+any(g==0)
+basebasll <- baseball[g!=0]
+lm(ab~g+0)
+
+
+
 
 
 ```
@@ -37,9 +60,29 @@ A very simple model to predict the number of at-bats/game **each** player has pe
 - Calculate the "Apparent" *RMSE* of this model.    
 
 ```{r}
+install.packages("hydroGOF")
+install.packages("zoo")
+install.packages("gglot2")
+library(hydroGOF)
+library(zoo)
+library(plyr)
+library(gglot2)
+rmse(ab,g)
+rmse <- function(error)
+{
+    sqrt(mean(error^2))
+}
+ 
 
-
-
+mae <- function(error)
+{
+    mean(abs(error))
+}
+ 
+error <- quote(ab/g-abpg)
+rmse(error)
+mae(error)
+ 
 ```
 
 
@@ -48,7 +91,13 @@ Using only Recreate the model, providing a new estimate for `ab/g` and the RMSE,
 - Bootstrap
 
 ```{r}
-
+library(caret)
+attach(baseball)
+set.seed(1)
+cvSplits <- createFolds(fit,k=5,
+                        returnTrain= TRUE)
+str(cvSplits)
+boot(cvSplits)
 
 
 ```
