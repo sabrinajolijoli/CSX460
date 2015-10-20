@@ -8,7 +8,6 @@ output: html_document
 ```{r}
 set.seed(314159)
 library(ggplot2)
-url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00229/Skin_NonSkin.txt"
 ```
 
 Review the [skin/non-skin UCI dataset]("https://archive.ics.uci.edu/ml/machine-learning-databases/00229/Skin_NonSkin.txt")
@@ -24,17 +23,18 @@ Show All Work!
 ```{r}
 
 
-
+url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/00229/Skin_NonSkin.txt"
 
 dat <- read.delim(url(url), header=FALSE )
 names(dat) <- c('r', 'g', 'b', 'skin') 
 
 # TRANSFORM DATA
-  dat$skin <- (dat$skin - 1) %>% as.logical 
+  dat$skin <- (dat$skin - 1) %>%  as.logical 
 
   
 # PARTITION DATA
   wh <- sample(1:nrow(dat), size = .7 * nrow(dat) )
+  
   train <- dat[wh, ]
   test  <- dat[-wh, ]
   
@@ -157,6 +157,5 @@ Repeat using high-order interactions for your model between the pixels, how much
 # Question
 
 When applying your model, you learned that your model was way-off. After some investigation you learned that your new data set contained only If you knew that your new data set contained only 25% the number of skin toned pixels as compared to the 
-
 
 

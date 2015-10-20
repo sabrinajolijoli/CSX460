@@ -39,13 +39,16 @@ For questions requiring:
 Show all code used to arrive at the answers.
 
 
-## Finish in-class assignments
-
 
 ## ***APM*** 6.2 (a)-(d)
 
 ```{r}
 # Place your code here
+library(AppliedPredictiveModeling)
+data(permeability)
+install.packages(randomForest)
+
+
 
 
 ```
@@ -56,25 +59,106 @@ Show all code used to arrive at the answers.
 
 ```{r}
 # place R code here
+install.packages("caret")
+library(caret)
+fingerprints
+predictors <-nearZeroVar(fingerprints)
+length(finger)
+
 ```
+
 
 (c)
 ```{r}
 # place R code here
+   library(AppliedPredictiveModeling)
+   classes <- permeability
+   set.seed(1)
+   trainingRows <-createDataPartition(classes ,p= .80,list = FALSE)
+   head(trainingRows)
+   trainPredictors <- predictors[trainingRows, ]
+   trainClasses <- classes[trainingRows]
+   testPredictors <-  predictors[-trainingRows,]
+   testClasses <- classes[-trainingRows]
+   str(testClasses)
+   trainpredictors <- preProcess(trainPredictors, method = c("center", "scale"))
+   prepredictors <- predictors(trainpredictors,trainPredictors)
+   testclasses <- preProcess(testClasses,method =c("center","scale"))
+   preclasses <- predict(testClasses,testClasses)
+   set.seed(1)
+   repeatedSplits <- createDataPartition(trainClasses, p = .80,
+                                      times = 3)
+   str(repeatedSplits)
+   set.seed(1)
+   cvSplits <- createFolds(trainClasses, k = 10,
+                         returnTrain = TRUE)
+   str(cvSplits)
+   fold1 <- cvSplits[[1]] 
+   cvPredictors1 <- trainPredictors[fold1,]
+   cvClasses1 <- trainClasses[fold1]
+   nrow(trainPredictors)
+   nrow(cvPredictors1)
+   library(e1071)
+   train(testPredictors~prepredictors)
+   train(testClasses~preclasses)
+   R2(preclasses,testClasses)
+   R2(prepredictors,testPredictors)
+   
+   
 ```
+
 
 (d) 
 ```{r}
 # place R code here
+    
+ R2(preclasses,testClasses)
+ R2(prepredictors,testPredictors)
+   
+
 ```
 
 
+## ***APM*** 6.3 
+
 
 ## German Credit Data ## 
+```{r}
+   library(caret)
+   library(AppliedPredictiveModeling)
+   library(e1071)
+   data("GermanCredit")
+ ??GermanCreditTrain
+  set.seed(1056)
+svmFit <-  train(Class ~ .,
+                 data = GermanCreditTrain,
+                 method = "svmRadial",
+                 preProc = c("center", "scale"),
+                 tuneLength = 10,
+                 trControl = trainControl(method = "repeatedcv",
+                                          repeats =5))
+
+ svmFit
+plot(svmFit, scales = list(x = list(log = 2)))
+predictedClasses <- predict(svmFit, GermanCreditTest)
+ str(predictedClasses)
+ predictedProbs <- predict(svmFit, newdata = GermanCreditTest,
+                          type = "prob")
+ set.seed(1056)
+ logisticReg <- train(Class ~ .,
+                     data = GermanCreditTrain,
+                     method = "glm",
+                     trControl = trainControl(method = "repeatedcv",
+repeats = 5))
+
+logisticReg
+resamp <- resamples(list(SVM = svmFit, Logistic = logisticReg))
+summary(resamp)
+modelDifferences <- diff(resamp)
+summary(modelDifferences)
+```
+   
+   
 
 The University of California, Irvine [Machine Learning Repository](https://archive.ics.uci.edu/ml/index.html). One popular data set is the [German Credit Data](https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data). Using this data, create a logistic regression model. 
-
-
-
-
 
