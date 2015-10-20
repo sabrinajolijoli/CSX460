@@ -25,6 +25,14 @@ library(caret)
 
 file="quizzes/binomial-performance/data.RData"
 load(file)
+observed <- glm(outcome~. ,
+             data=train,
+             family = binomial)
+observed
+predicted <- predict(observed,test,type = "response") >0.5
+predicted
+                     
+
 
 # place work here
 ```
@@ -34,6 +42,11 @@ Based on your model and the test set, what is your disadvantage when O holds the
 
 ```{r}
 # place work here
+install.packages("rms")
+library(rms)
+prob <- lrm(outcome ~ rcs(MMo),data=train)
+prob
+
 ```
 
 - Using the 'model', create a contingency table for the predicted outcomes of the test set. (Resampling not necessary)
@@ -41,6 +54,21 @@ Based on your model and the test set, what is your disadvantage when O holds the
 
 ```{r}
 # place work here
+tab <-table(test$outcome,predicted)
+tab
+Prevalance <-sum(predicted)/nrow(test)  
+Accuracy <-sum(diag(tab))/sum(tab)   
+ErrorRate <-1- accuracy                                
+tpr <- function(x,y) sum(x==y & x ) /sum(x) 
+fp <- function(x,y) sum(x!=y & !x)
+tp <- function(x,y) sum(x==y & x ) 
+tnr <- function(x,y) sum(y==x & !x) /sum(!x)
+fnr <- function(x,y) sum(x!=y & x ) /sum(x)
+TPR <- tpr(test$outcome,predicted) 
+Sensitivity <- tpr(test$outcome,predicted) 
+Specificity <-tnr(test$outcome,predicted) 
+FP <- fp(test$outcome,predicted)
+TP <- tp(test$outcome,predicted)
 ```
 
 - If your contingency table looks like this:
