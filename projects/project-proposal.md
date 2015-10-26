@@ -51,7 +51,8 @@ measuring Predictor Importance
 * Who will use the model?
 Socialist and police and maybe university professor 
 * How will the use it?
-They can use it to 
+They can use it to predict and prevent crime,it's also very important fot residents to 
+be on their guard.
 
 
 ## Miscellaneous
