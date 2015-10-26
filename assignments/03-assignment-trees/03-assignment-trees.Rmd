@@ -1,0 +1,93 @@
+---
+title: "03-assignment: Trees"
+author: "Christopher Brown"
+date: "October 12, 2015"
+output: html_document
+---
+
+## Readings
+
+In Applied Predictive Modeling (APM) read:
+- Chapter 8.1 - 8.8, 
+- Chapter 11
+- Chapter 14.1 - 14.5, 14.8
+
+## Problems: Due October 26th, 2015 
+
+- Project Update. (I will put a template in the projects folder for you to report your status on.) 
+
+- Excersizes, In APM: 
+
+8.1 (a) - (C)
+8.4 (a) - (b)
+14.2
+
+```{r}
+install.packages("mlbench")
+library(mlbench)
+set.seed(200)
+simulated <- mlbench.friedman1(200,sd=1)
+simulated <- cbind(simulated$x,simulated$y)
+simulated <-as.data.frame(simulated)
+colnames(simulated)[ncol(simulated)] <- "y"
+install.packages("randomForest")
+library(randomForest)
+library(caret)
+library(ggplot2)
+library(lattice)
+model1 <- randomForest(y~., data=simulated,importance= TRUE,ntree=1000)
+rfImp1 <- varImp(model1,scale = FALSE)
+simulated$duplicate1 <- simulated$V1 + rnorm(200)* .1
+cor(simulated$duplicate1, simulated$V1)
+model2 <- randomForest(simulated$duplicate1,simulated$V1,importance =TRUE,ntrees =1000)
+install.packages("party")
+library(party)
+model2 <- cforest(y~.,data = simulated)
+rfImp2 <-varimp(model2,conditional = FALSE)
+rfImp2
+```
+
+```{r}
+library(AppliedPredictiveModeling)
+data(solubility)
+trainingData <- solTrainXtrans
+trainingData$Solubility <- solTrainY
+LmFitALLPredictors <- lm (Solubility~MolWeight , data=trainingData)
+summary(LmFitALLPredictors)
+library(randomForest)
+rfModel <- randomForest(solTrainXtrans,solTrainY,importance=TRUE,ntrees =1000)
+summary(rfModel)
+```
+
+
+```{r}
+install.packages("C50")
+install.packages("ipred")
+install.packages("gbm")
+data(churn)
+
+library(C50)
+str(churnTrain)
+table(churnTrain$class)
+library(rpart)
+library(ipred)
+library(gbm)
+fit1 <- rpart(churn~.,data = churnTrain)
+fit2 <- bagging(churn~.,data = churnTrain)
+fit3 <- gbm(churn~.,data=churnTrain,distribution = "gaussian")
+install.packages("Cubist")
+library(Cubist)
+cubistMod <- train(churnTrain, churnTrain$churn,                                 data=churnTrain,method="cubist") 
+liftCurve <- lift(churnTest$churn )                                   
+
+
+
+
+
+
+
+
+
+
+
+
